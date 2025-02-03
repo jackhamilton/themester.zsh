@@ -10,6 +10,7 @@ use rand::rngs::StdRng;
 
 #[derive(Clone)]
 struct Config {
+    cache_file_location: Option<String>,
     term_env_var_name: Option<String>,
     nvim_theme_env_var_name: Option<String>,
     nvim_plugin_env_var_name: Option<String>,
@@ -34,13 +35,27 @@ fn main() {
     match arg.as_str() {
         "-h" => help(),
         "-r" => randomize_theme(),
+        "-l" => load_cache(),
         _ => help(),
     }
 }
 
 fn help() {
-    println!("Arguments:\n\t-h for help (this)\n\teval $(themester -r) to randomize your theme");
+    println!("Arguments:\n\t-h for help (this)\n\teval $(themester -r) to randomize your theme\
+        \n\teval $(themester -l) in your .zshrc to load the last session's theme environment variables");
     std::process::exit(0);
+}
+
+fn load_cache() {
+    setup_config_file();
+    let config = load_config();
+
+    if let Some(cache_path) = config.cache_file_location {
+        let expanded = shellexpand::tilde(&cache_path).into_owned().to_string();
+        let file_path = Path::new(&expanded);
+        let cache_contents = fs::read_to_string(file_path).expect("echo \"Could not read cache file!\"");
+        println!("{}", cache_contents);
+    }
 }
 
 fn randomize_theme() {
@@ -48,7 +63,19 @@ fn randomize_theme() {
     let config = load_config();
     let copy = config.clone();
 
-    println!("{}", randomize(copy));
+    let export_str = randomize(copy);
+    if let Some(cache_path) = config.cache_file_location {
+        let expanded = shellexpand::tilde(&cache_path).into_owned().to_string();
+        let file_path = Path::new(&expanded);
+        match OpenOptions::new().create(true).truncate(true).write(true).open(file_path) {
+            Ok(_) => Ok(()),
+            Err(e) => Err(e),
+        }.unwrap_or_else(|why| {
+            println!("! {:?}", why.kind());
+        });
+        fs::write(file_path, export_str.clone()).expect("echo \"Unable to write theme lua file.\"")
+    }
+    println!("{}", export_str);
 }
 
 fn randomize(config: Config) -> String {
@@ -123,7 +150,7 @@ fn setup_config_file() {
         touch(config_path).unwrap_or_else(|why| {
             println!("! {:?}", why.kind());
         });
-        let default_config = "random = true\n\
+        let default_config = "cache_file_location = \"~/.config/themester/.themecache\"\n\n\
             term_env_var_name = \"TERM_THEME\"\n\
             nvim_plugin_env_var_name = \"NVIM_THEME_PLUGIN\"\n\
             nvim_theme_env_var_name = \"NVIM_THEME\"\n\n\
@@ -149,6 +176,13 @@ fn load_config() -> Config {
     let mut write_term_lua: Option<bool> = None;
     if config.contains_key("write_term_lua") {
         write_term_lua = config["write_term_lua"].as_bool();
+    }
+    let mut cache_file_location: Option<String> = None;
+    if config.contains_key("cache_file_location") {
+        let cache_file_location_str = config["cache_file_location"].as_str();
+        if let Some(unwrap) = cache_file_location_str {
+            cache_file_location = Some(unwrap.to_string());
+        }
     }
     let mut term_lua_path: Option<String> = None;
     if config.contains_key("term_lua_path") {
@@ -199,6 +233,7 @@ fn load_config() -> Config {
         }
     }
     Config {
+        cache_file_location,
         term_env_var_name,
         nvim_theme_env_var_name,
         nvim_plugin_env_var_name,
@@ -209,7 +244,7 @@ fn load_config() -> Config {
 }
 
 fn touch(path: &Path) -> io::Result<()> {
-    match OpenOptions::new().create(true).truncate(true).write(true).open(path) {
+    match OpenOptions::new().create(true).truncate(false).write(true).open(path) {
         Ok(_) => Ok(()),
         Err(e) => Err(e),
     }
