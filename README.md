@@ -83,6 +83,7 @@ themester.zsh has the ability to write a lua file with the provided name contain
 local theme = require('dynamic_theme')
 config.color_scheme = "" .. theme
 ```
+^ An example wezterm config using this functionality.
 
 ```toml
 [[theme]]
