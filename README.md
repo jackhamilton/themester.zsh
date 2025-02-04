@@ -30,6 +30,7 @@ new environment variables and writing the theme lua file if that setting is enab
 echo "\nalias theme=\"eval $(themester -r)\"" > ~/.zshrc
 ```
 
+Then, run themester -r and setup the config file it generates at ~/.config/themester as described in the config format section of this readme.
 
 ## How it works
 
