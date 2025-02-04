@@ -1,5 +1,11 @@
 # themester.zsh
 
+
+
+https://github.com/user-attachments/assets/eb0adf04-4138-4a9a-9af5-79794c6c7a6a
+
+
+
 Integrate your nvim and terminal theme, and randomize them between a preselected list of options. Publishes a .lua file containing a theme string for your terminal, and publishes environment variables which can be read by either your terminal emulator or anything else you'd like to theme.
 
 Designed specifically to integrate wezterm and nvim's themes, though it can be used generally.
