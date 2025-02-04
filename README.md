@@ -76,7 +76,7 @@ write_term_lua = true
 term_lua_path = "~/.config/wezterm/dynamic_theme.lua"
 ```
 
-themester.zsh has the ability to write a lua file with the provided name containing a return "[string]" statement, which can then be read by terminal emulators like wezterm. Wezterm particularly will reload its config if any files it sources are updated, which means that's all you need to do in order for that integration to work.
+themester.zsh has the ability to write a lua file with the provided name containing a return "[TERM_THEME]" statement, which can then be read by terminal emulators like wezterm. Wezterm particularly will reload its config if any files it sources are updated, which means that's all you need to do in order for that integration to work.
 
 ```lua
 -- This could go in your wezterm conf if using the default generated file name in order to update the wezterm theme when themester triggers.
