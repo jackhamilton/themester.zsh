@@ -55,7 +55,7 @@ simply outputs the last randomization, pulled from the cache file. Hence, if you
 
 ## Config format
 
-A config will be generated for you if one is not present the first time you run "themester -r".
+A config will be generated for you at ~/.config/themester if one is not present the first time you run "themester -r".
 
 ```toml
 cache_file_location = "~/.config/themester/.themecache"
