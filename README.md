@@ -12,18 +12,17 @@ Pair with [themester.nvim](https://github.com/jackhamilton/themester.nvim) for a
 
 ## Setup
 
-Copy the themester release binary to any location you can add to your PATH, then add it to your path.
-For example:
+Themester is available on crates.io, and can be installed through cargo.
 
 ```zsh
-sudo cp target/release/themester /usr/local/bin/
-#If /usr/local/bin is not already in your path. You could also put this in .zshenv or any file sourced form your zshrc.
-echo "\nexport PATH=\"$PATH:/usr/local/bin/" > ~/.zshrc
+cargo install themester
 ```
 
 Add a line sourcing the themester cache file to your .zshrc:
+(if you're using bash, please replace .zshrc with .bashrc in the following examples. also please stop using bash)
 
 ```zsh
+# If you're editing your .zshrc yourself, instead add 'eval $(themester -l)' to it
 echo "\neval $(themester -l)" > ~/.zshrc
 ```
 
@@ -31,6 +30,7 @@ Then optionally add an alias for eval $(themester -r), which shuffles your theme
 new environment variables and writing the theme lua file if that setting is enabled.
 
 ```zsh
+# The following zsh code will make a new bash command "theme" that evaluates the themester -r command, randomizing your theme.
 echo "\nalias theme=\"eval $(themester -r)\"" > ~/.zshrc
 ```
 

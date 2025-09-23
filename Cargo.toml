@@ -2,6 +2,12 @@
 name = "themester"
 version = "0.2.1"
 edition = "2021"
+license = "Unlicense"
+authors = ["Jack Hamilton jackham800@gmail.com"]
+keywords = ["cli", "theme"]
+categories = ["command-line-utilities"]
+repository = "https://github.com/jackhamilton/themester.zsh"
+description = "Links your terminal and nvim themes, and lets you randomize them."
 
 [dependencies]
 shellexpand = "3.0"
