@@ -1,9 +1,11 @@
 [package]
 name = "themester"
-version = "0.1.0"
+version = "0.2.1"
 edition = "2021"
 
 [dependencies]
 shellexpand = "3.0"
 toml = "0.8.19"
 rand = "0.9.0"
+toml-configurator = "0.2.0"
+freezable-trait = "~0"
