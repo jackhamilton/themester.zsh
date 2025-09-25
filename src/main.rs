@@ -69,7 +69,6 @@ impl Default for LocalData {
     fn default() -> Self {
         Self {
             _unknown_fields: [].into(),
-            // last_randomized: chrono::offset::Utc::now()
             last_randomized: DateTime::from_timestamp_secs(0).expect("Could not resolve datetime")
         }
     }
