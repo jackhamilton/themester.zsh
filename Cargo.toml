@@ -1,6 +1,6 @@
 [package]
 name = "themester"
-version = "0.2.1"
+version = "0.3.0"
 edition = "2024"
 license = "Unlicense"
 authors = ["Jack Hamilton jackham800@gmail.com"]
@@ -13,7 +13,7 @@ description = "Links your terminal and nvim themes, and lets you randomize them.
 shellexpand = "3.0"
 toml = "0.8.19"
 rand = "0.9.0"
-toml-configurator = "0.2.0"
+toml-configurator = "~0"
 freezable-trait = "~0"
 chrono = { version = "0.4.42", features = ["serde"] }
 rustc-serialize = "0.3.25"
