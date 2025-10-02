@@ -45,7 +45,7 @@ impl Default for Config {
 #[freezable]
 struct Theme {
     term: String,
-    nvim_plugin: String,
+    nvim_plugin: Option<String>,
     nvim_themename: String,
 }
 
@@ -54,7 +54,7 @@ impl Default for Theme {
         Self {
             _unknown_fields: [].into(),
             term: "plugin-name".into(),
-            nvim_plugin: "nvim-plugin-name".into(),
+            nvim_plugin: None,
             nvim_themename: "nvim-plugin-colorscheme".into()
         }
     }
@@ -160,7 +160,11 @@ fn randomize(config: &Config) -> String {
                 write_term_themefile_lua(config.write_term_lua, config.term_lua_path.clone(), String::from(chosen));
                 if let Some(nvim) = config.theme.iter().find(|item| item.term == *chosen) {
                     export_string = format!("{}\nexport {}=\"{}\"", export_string, config.nvim_theme_env_var_name, nvim.nvim_themename);
-                    export_string = format!("{}\nexport {}=\"{}\"", export_string, config.nvim_plugin_env_var_name, nvim.nvim_plugin);
+                    if let Some(plug) = &nvim.nvim_plugin {
+                        export_string = format!("{}\nexport {}=\"{}\"", export_string, config.nvim_plugin_env_var_name, plug);
+                    } else {
+                        export_string = format!("{}\nexport {}=\"\"", export_string, config.nvim_plugin_env_var_name);
+                    }
                 }
                 return export_string;
             }
@@ -170,7 +174,11 @@ fn randomize(config: &Config) -> String {
         write_term_themefile_lua(config.write_term_lua, config.term_lua_path.clone(), String::from(chosen));
         if let Some(nvim) = config.theme.iter().find(|item| item.term == *chosen) {
             export_string = format!("{}\nexport {}=\"{}\"", export_string, config.nvim_theme_env_var_name, nvim.nvim_themename);
-            export_string = format!("{}\nexport {}=\"{}\"", export_string, config.nvim_plugin_env_var_name, nvim.nvim_plugin);
+            if let Some(plug) = &nvim.nvim_plugin {
+                export_string = format!("{}\nexport {}=\"{}\"", export_string, config.nvim_plugin_env_var_name, plug);
+            } else {
+                export_string = format!("{}\nexport {}=\"\"", export_string, config.nvim_plugin_env_var_name);
+            }
             return export_string;
         }
     }
