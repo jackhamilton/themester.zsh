@@ -1,3 +1,4 @@
+use freezable_trait::freezable;
 use freezable_trait::Freezable;
 use std::fs;
 use std::fs::OpenOptions;
@@ -7,38 +8,18 @@ use std::env;
 use chrono::{DateTime, TimeDelta, Utc};
 use rand::seq::IndexedRandom;
 use rand::rngs::StdRng;
-use freezable_trait::freezable;
+use toml_configurator::configurator_macros::config_builder;
 
-#[derive(Debug)]
-#[freezable]
-struct Config {
-    cache_file_location: String,
-    term_env_var_name: String,
-    nvim_theme_env_var_name: String,
-    nvim_plugin_env_var_name: String,
-    write_term_lua: bool,
-    term_lua_path: String,
+config_builder! {
+    cache_file_location: String = "~/.config/themester/.themecache".into(),
+    term_env_var_name: String = "TERM_THEME".into(),
+    nvim_theme_env_var_name: String = "NVIM_THEME".into(),
+    nvim_plugin_env_var_name: String = "NVIM_THEME_PLUGIN".into(),
+    write_term_lua: bool = true,
+    term_lua_path: String = "~/.config/wezterm/dynamic_theme.lua".into(),
     // Zero means it will never randomize
-    hours_per_randomization: i32,
-    theme: Vec<Theme>,
-}
-
-impl Default for Config {
-    fn default() -> Self {
-        Self {
-            _unknown_fields: [].into(),
-            cache_file_location: "~/.config/themester/.themecache".into(),
-            term_env_var_name: "TERM_THEME".into(),
-            nvim_theme_env_var_name: "NVIM_THEME".into(),
-            nvim_plugin_env_var_name: "NVIM_THEME_PLUGIN".into(),
-            write_term_lua: true,
-            term_lua_path: "~/.config/wezterm/dynamic_theme.lua".into(),
-            hours_per_randomization: 0,
-            theme: vec![
-                Theme::default()
-            ]
-        }
-    }
+    hours_per_randomization: i32 = 0,
+    theme: Vec<Theme> = vec![Theme::default()],
 }
 
 #[derive(Debug)]
@@ -163,8 +144,9 @@ fn randomize(config: &Config) -> String {
                     if let Some(plug) = &nvim.nvim_plugin {
                         export_string = format!("{}\nexport {}=\"{}\"", export_string, config.nvim_plugin_env_var_name, plug);
                     } else {
-                        export_string = format!("{}\nexport {}=\"\"", export_string, config.nvim_plugin_env_var_name);
-                    }
+                        export_string = format!("{}\nexport {}=\"none\"", export_string, config.nvim_plugin_env_var_name);
+                }
+
                 }
                 return export_string;
             }
@@ -177,7 +159,7 @@ fn randomize(config: &Config) -> String {
             if let Some(plug) = &nvim.nvim_plugin {
                 export_string = format!("{}\nexport {}=\"{}\"", export_string, config.nvim_plugin_env_var_name, plug);
             } else {
-                export_string = format!("{}\nexport {}=\"\"", export_string, config.nvim_plugin_env_var_name);
+                export_string = format!("{}\nexport {}=\"none\"", export_string, config.nvim_plugin_env_var_name);
             }
             return export_string;
         }
