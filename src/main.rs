@@ -9,6 +9,7 @@ use chrono::{DateTime, TimeDelta, Utc};
 use rand::seq::IndexedRandom;
 use rand::rngs::StdRng;
 use toml_configurator::configurator_macros::config_builder;
+use toml_configurator::get_config;
 
 config_builder! {
     cache_file_location: String = "~/.config/themester/.themecache".into(),
