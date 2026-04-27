@@ -153,7 +153,7 @@ fn randomize(config: &Config) -> String {
             }
         }
     } else if let Some(chosen) = config.theme.iter().map(|item| item.term.clone()).collect::<Vec<String>>().choose(&mut rng) {
-        export_string = format!("{}export {}={}", export_string, config.term_env_var_name, chosen);
+        export_string = format!("{}export {}=\"{}\"", export_string, config.term_env_var_name, chosen);
         write_term_themefile_lua(config.write_term_lua, config.term_lua_path.clone(), String::from(chosen));
         if let Some(nvim) = config.theme.iter().find(|item| item.term == *chosen) {
             export_string = format!("{}\nexport {}=\"{}\"", export_string, config.nvim_theme_env_var_name, nvim.nvim_themename);
